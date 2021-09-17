@@ -24,4 +24,21 @@ export default class DoorManager {
 
         return accessToken;
     }
+
+    /**
+     * Returns whether or not the Access token is authorized to open the specified door
+     * @param AccessToken The Access Code Token
+     * @param DoorId The numeric Door Id to check
+     * @returns Whether or not Specified Access token is authorized to open Specified Door
+     */
+    public validate(AccessToken: string, DoorId: number): boolean {
+        const AuthDoors : Array<number> | undefined = this.database.getAccessCodeAuthDoors(AccessToken);
+        
+        if(AuthDoors != undefined) {
+            console.log("Checking if " + DoorId + " is in " + DoorId)
+            return AuthDoors.indexOf(DoorId) >= 0;
+        }
+
+        return false;
+    }
 }

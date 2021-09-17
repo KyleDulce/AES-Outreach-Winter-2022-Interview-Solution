@@ -19,7 +19,14 @@ app.use(express.json());
 app.post("/api/create", (req, res) => {
     const door_data : Array<number> = req.body.doors;
 
-    res.send(doorManager.create(door_data));
+    res.send({AccessToken: doorManager.create(door_data)});
+});
+
+app.get("/api/validate", (req, res) => {
+    const doorid : number = req.body.doorid;
+    const accessToken: string = req.body.accessToken;
+
+    res.send({IsAuthorized: doorManager.validate(accessToken, doorid)})
 });
 
 server.listen(port, () => {
