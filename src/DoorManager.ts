@@ -20,7 +20,9 @@ export default class DoorManager {
         const accessToken: string = crypto.randomBytes(64).toString('hex');
 
         //setup access token in database to open stated doors
-        this.database.AddAccessCode(accessToken, doorAccess);
+        if(!this.database.AddAccessCode(accessToken, doorAccess)) {
+            console.error("Problem Adding Access token " + accessToken);
+        }
 
         return accessToken;
     }
@@ -35,7 +37,6 @@ export default class DoorManager {
         const AuthDoors : Array<number> | undefined = this.database.getAccessCodeAuthDoors(AccessToken);
         
         if(AuthDoors != undefined) {
-            console.log("Checking if " + DoorId + " is in " + DoorId)
             return AuthDoors.indexOf(DoorId) >= 0;
         }
 

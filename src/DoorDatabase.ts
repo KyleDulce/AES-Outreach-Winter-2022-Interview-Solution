@@ -12,6 +12,7 @@ export default class DoorDatabase {
     public AddAccessCode(AccessCode: string, Auth_Doors: Array<number>): boolean {
         if(!this.IsValidAccessCode(AccessCode)) {
             this.AccessCode_Auth_Doors.set(AccessCode, Auth_Doors);
+            console.log("Added Token to database");
             return true;
         }
         return false;
