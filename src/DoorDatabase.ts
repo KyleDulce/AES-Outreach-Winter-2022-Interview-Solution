@@ -1,5 +1,10 @@
+import fs from 'fs';
 
 export default class DoorDatabase {
+
+    //File location of the json database
+    private static readonly DATABASE_FILE: string = "../data/AccessTokens.db";
+
     //Map of Access code and the authorized doors they are allowed to access
     private AccessCode_Auth_Doors: Map<string, Array<number>> = new Map();
 
