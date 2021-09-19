@@ -27,6 +27,7 @@ export default class DoorDatabase {
      * @param callback Callback for when async tasks have completed
      */
     public constructor(callback?: Function) {
+        var memorycache = this.AccessCode_Auth_Doors;
         this.AccessDatabase = new Database(DoorDatabase.DATABASE_FILE, (err) => {
             if (err) {
                 console.warn("WARNING: Database cannot be opened, disabling database! Error: " + err);
@@ -71,7 +72,7 @@ export default class DoorDatabase {
                                 for (let r of rows) {
                                     
                                     //checks if access token was already added
-                                    if(!this.AccessCode_Auth_Doors.has(r.AccessToken)) {
+                                    if(!memorycache.has(r.AccessToken)) {
                                         //access token is not added yet
                                         var td: TableData = new TableData();
                                         td.AccessToken = r.AccessToken;
@@ -79,12 +80,11 @@ export default class DoorDatabase {
                                         if(r.Expiry == "undefined") {
                                             td.Expiry = undefined;
                                         } else {
-                                            Number.parseInt(r.Expiry);
+                                            td.Expiry = Number.parseInt(r.Expiry);
                                         }
-
-                                        this.AccessCode_Auth_Doors.set(r.AccessToken, td);
+                                        memorycache.set(r.AccessToken, td);
                                     }
-                                    this.AccessCode_Auth_Doors.get(r.AccessToken)?.AuthorizedDoors.push(r.AuthorizedDoors);
+                                    memorycache.get(r.AccessToken)?.AuthorizedDoors.push(r.AuthorizedDoors);
                                 }
                                 
                                 console.log("Caching database in memory complete!");
