@@ -12,7 +12,7 @@ import DoorManager from "./DoorManager";
 console.log("Starting Server");
 
 //Start Door Manager
-let doorManager = new DoorManager();
+const doorManager = new DoorManager();
 
 //open express
 const app = express();
@@ -22,8 +22,9 @@ app.use(express.json());
 
 app.post("/api/create", (req, res) => {
     const door_data : Array<number> = req.body.doors;
+    const expiry: number = req.body.expiry;
 
-    res.send({AccessToken: doorManager.create(door_data)});
+    res.send({AccessToken: doorManager.create(door_data, expiry)});
 });
 
 app.post("/api/validate", (req, res) => {

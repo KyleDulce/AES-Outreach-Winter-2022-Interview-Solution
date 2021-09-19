@@ -6,21 +6,22 @@ export default class DoorManager {
     //The Database object that holds the data
     database: DoorDatabase;
 
-    constructor() {
-        this.database = new DoorDatabase();
+    public constructor(callback?: Function) {
+        this.database = new DoorDatabase(callback);
     }
 
     /**
      * Creates an Access Token with specific Authorized Door Accesses
      * @param doorAccess List of Door Ids the Access Token is Authorized to access
+     * @param Expiry The UNIX timestamp of when the token will expire
      * @returns The Access token String
      */
-    public create(doorAccess: Array<number>): string {
-        //Generate Access Token (128 hex token)
+    public create(doorAccess: Array<number>, Expiry: number): string {
+        //Generate Access Token (128 hex character token)
         const accessToken: string = crypto.randomBytes(64).toString('hex');
 
         //setup access token in database to open stated doors
-        if(!this.database.AddAccessCode(accessToken, doorAccess)) {
+        if (!this.database.AddAccessCode(accessToken, doorAccess, Expiry)) {
             console.error("Problem Adding Access token " + accessToken);
         }
 
@@ -34,10 +35,13 @@ export default class DoorManager {
      * @returns Whether or not Specified Access token is authorized to open Specified Door
      */
     public validate(AccessToken: string, DoorId: number): boolean {
-        const AuthDoors : Array<number> | undefined = this.database.getAccessCodeAuthDoors(AccessToken);
-        
-        if(AuthDoors != undefined) {
-            return AuthDoors.indexOf(DoorId) >= 0;
+        const AuthDoors: Array<number> | undefined = this.database.getAccessCodeAuthDoors(AccessToken);
+        const Expiry: number | undefined = this.database.getAccessCodeExpiry(AccessToken);
+
+        if (Expiry != undefined && Expiry > Date.now()) {
+            if (AuthDoors != undefined) {
+                return AuthDoors.indexOf(DoorId) >= 0;
+            }
         }
 
         return false;
