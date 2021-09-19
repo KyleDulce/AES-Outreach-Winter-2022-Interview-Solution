@@ -1,10 +1,9 @@
-import { access } from "fs";
 import { Database } from "sqlite3";
 
 export default class DoorDatabase {
 
     //File location of the json database
-    private static readonly DATABASE_FILE: string = "../data/AccessTokens.db";
+    private static readonly DATABASE_FILE: string = "./data/AccessTokens.db";
 
     //Table Properties Note If you change these properties, change the name of 
     //properties in the  Class Object below
@@ -30,7 +29,7 @@ export default class DoorDatabase {
     public constructor(callback?: Function) {
         this.AccessDatabase = new Database(DoorDatabase.DATABASE_FILE, (err) => {
             if (err) {
-                console.warn("WARNING: Database cannot be opened, disabling database!");
+                console.warn("WARNING: Database cannot be opened, disabling database! Error: " + err);
                 this.databaseSafe = false;
                 if (callback) {
                     callback();
@@ -46,7 +45,7 @@ export default class DoorDatabase {
                     (err) => { //callback when command is executed
                         //checks if error in table schema
                         if (err) {
-                            console.warn("WARNING: Database Table Check failed!");
+                            console.warn("WARNING: Database Table Check failed! Error: " + err);
                             this.databaseSafe = false;
                             if (callback) {
                                 callback();
@@ -62,7 +61,7 @@ export default class DoorDatabase {
                             `SELECT * FROM '${DoorDatabase.TABLE_NAME}'`,
                             (err, rows) => {
                                 if (err) {
-                                    console.warn("Error in reading the table!");
+                                    console.warn("Error in reading the table! Error: " + err);
                                     if (callback) {
                                         callback();
                                     }
@@ -123,7 +122,7 @@ export default class DoorDatabase {
                         `VALUES ('${AccessCode}', '${door}', '${Expiry}')`,
                         (err) => {
                             if (err) {
-                                console.warn("Error in placing property into table, Token: " + AccessCode);
+                                console.warn("Error in placing property into table, Token: " + AccessCode + " Error: " + err);
                             }
                         }
                     );
