@@ -38,7 +38,7 @@ export default class DoorManager {
         const AuthDoors: Array<number> | undefined = this.database.getAccessCodeAuthDoors(AccessToken);
         const Expiry: number | undefined = this.database.getAccessCodeExpiry(AccessToken);
 
-        if (Expiry != undefined && Expiry > Date.now()) {
+        if (Expiry == undefined || Expiry > Date.now()) {
             if (AuthDoors != undefined) {
                 return AuthDoors.indexOf(DoorId) >= 0;
             }

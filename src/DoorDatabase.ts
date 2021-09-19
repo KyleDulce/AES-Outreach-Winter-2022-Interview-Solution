@@ -75,7 +75,12 @@ export default class DoorDatabase {
                                         //access token is not added yet
                                         var td: TableData = new TableData();
                                         td.AccessToken = r.AccessToken;
-                                        td.Expiry = r.Expiry;
+                                        
+                                        if(r.Expiry == "undefined") {
+                                            td.Expiry = undefined;
+                                        } else {
+                                            Number.parseInt(r.Expiry);
+                                        }
 
                                         this.AccessCode_Auth_Doors.set(r.AccessToken, td);
                                     }
