@@ -17,7 +17,7 @@ I completed the back-end challenge for the digital key card system through a RES
 - Dependencies: 
 	- [Express](https://www.npmjs.com/package/express) v4.17.1
 	- [sqlite3](https://www.npmjs.com/package/sqlite3) v4.2.0 
-	- [tsc compiler for Typescript](https://www.npmjs.com/package/tsc) v2.0.3
+	- [Typescript](https://www.npmjs.com/package/typescript) v4.4.3
 - Dev Dependencies:
 	- @<span>types/express
 	- @<span>types/node
