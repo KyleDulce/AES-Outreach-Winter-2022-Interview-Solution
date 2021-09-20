@@ -27,7 +27,7 @@ export default class DoorDatabase {
      * @param callback Callback for when async tasks have completed
      */
     public constructor(callback?: Function) {
-        var memorycache = this.AccessCode_Auth_Doors;
+        let memorycache = this.AccessCode_Auth_Doors;
         this.AccessDatabase = new Database(DoorDatabase.DATABASE_FILE, (err) => {
             if (err) {
                 console.warn("WARNING: Database cannot be opened, disabling database! Error: " + err);
