@@ -6,3 +6,4 @@ if exist ".\build" (
 ) else (
     echo "Enviroment was not setup. Run 'First-Time-Start.bat'"
 )
+PAUSE
