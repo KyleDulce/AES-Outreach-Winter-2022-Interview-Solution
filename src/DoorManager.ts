@@ -24,7 +24,11 @@ export default class DoorManager {
         }
 
         //Generate Access Token (128 hex character token)
-        const accessToken: string = crypto.randomBytes(64).toString('hex');
+        let accessToken: string;
+        do {
+            accessToken = crypto.randomBytes(64).toString('hex');
+        } while(this.database.IsValidAccessCode(accessToken));
+        
 
         //setup access token in database to open stated doors
         if (!this.database.AddAccessCode(accessToken, doorAccess, Expiry)) {

@@ -1,0 +1,193 @@
+<html>
+
+<body>
+    <h1>Test Results</h1><br>
+    <h2>There are 4 groups of tests, each group testing a specific type of error or use-case</h2><br>
+</body>
+
+</html>
+<script>
+    const bodyElement = document.body;
+    const testURL = "http://localhost:3000"; //change this if working in network
+
+    function addLineToDocument(line) {
+        bodyElement.innerHTML = bodyElement.innerHTML + line + "<br>";
+    }
+
+    function postRequest(path, obj, callback) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                callback(xhr.response);
+            }
+        }
+
+        xhr.open("POST", testURL + path, false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(obj));
+    }
+
+    var index = 0;
+    var tests = [
+        //test 0
+        function () {
+            //test doors
+            postRequest('/api/create', { doors: [1, 2] }, (res) => {
+                var obj = JSON.parse(res);
+                var AccessToken = obj.AccessToken;
+                console.log("Key " + index + ": " + AccessToken);
+                if (AccessToken != "") {
+                    postRequest('/api/validate', { accessToken: AccessToken, doorid: 1 }, (res) => {
+                        obj = JSON.parse(res);
+                        if (obj.IsAuthorized === true) {
+                            postRequest('/api/validate', { accessToken: AccessToken, doorid: 2 }, (res) => {
+                                obj = JSON.parse(res);
+                                if (obj.IsAuthorized === true) {
+                                    postRequest('/api/validate', { accessToken: AccessToken, doorid: 3 }, (res) => {
+                                        obj = JSON.parse(res);
+                                        if (obj.IsAuthorized === false) {
+                                            addLineToDocument("Test " + index + " passed");
+                                            nextTest();
+                                        } else {
+                                            addLineToDocument("Test " + index + " failed: bad return 3");
+                                            nextTest();
+                                        }
+                                    })
+                                } else {
+                                    addLineToDocument("Test " + index + " failed: bad return 2");
+                                    nextTest();
+                                }
+                            })
+                        } else {
+                            addLineToDocument("Test " + index + " failed: bad return 1");
+                            nextTest();
+                        }
+                    })
+                } else {
+                    addLineToDocument("Test " + index + " failed: null return");
+                    nextTest();
+                }
+            });
+        },
+        function () {
+            //test expiry (20 second timeout)
+            postRequest('/api/create', { doors: [1, 2], expiry: Date.now() + 10000 }, (res) => {
+                var obj = JSON.parse(res);
+                var AccessToken = obj.AccessToken;
+                console.log("Key " + index + ": " + AccessToken);
+                if (AccessToken != "") {
+                    postRequest('/api/validate', { accessToken: AccessToken, doorid: 1 }, (res) => {
+                        obj = JSON.parse(res);
+                        if (obj.IsAuthorized === true) {
+                            addLineToDocument("Testing time expiry please wait...");
+                            setTimeout(function () {
+                                postRequest('/api/validate', { accessToken: AccessToken, doorid: 1 }, (res) => {
+                                    obj = JSON.parse(res);
+                                    if (obj.IsAuthorized === false) {
+                                        addLineToDocument("Test " + index + " passed");
+                                        nextTest();
+                                    } else {
+                                        addLineToDocument("Test " + index + " failed: bad return 2");
+                                        nextTest();
+                                    }
+                                })
+                            }, 15000)
+                        } else {
+                            addLineToDocument("Test " + index + " failed: bad return 1");
+                            nextTest();
+                        }
+                    })
+                } else {
+                    addLineToDocument("Test " + index + " failed: null return");
+                    nextTest();
+                }
+
+            });
+        },
+        function () {
+            //wrong input tests
+            postRequest('/api/create', { doors: ["1", 2], expiry: Date.now() + 10000 }, (res) => {
+                var obj = JSON.parse(res);
+                var AccessToken = obj.AccessToken;
+                console.log("Key " + index + ": " + AccessToken);
+                if (AccessToken == "") {
+                    postRequest('/api/create', { doors: "[1, 2]", expiry: Date.now() + 10000 }, (res) => {
+                        var obj = JSON.parse(res);
+                        var AccessToken = obj.AccessToken;
+                        console.log("Key " + index + ": " + AccessToken);
+                        if (AccessToken == "") {
+                            postRequest('/api/create', { doors: [1, 2], expiry: "word" }, (res) => {
+                                var obj = JSON.parse(res);
+                                var AccessToken = obj.AccessToken;
+                                console.log("Key " + index + ": " + AccessToken);
+                                if (AccessToken == "") {
+                                    addLineToDocument("Test " + index + " passed");
+                                    nextTest();
+                                } else {
+                                    addLineToDocument("Test " + index + " failed: bad return 3");
+                                    nextTest();
+                                }
+                            })
+                        } else {
+                            addLineToDocument("Test " + index + " failed: bad return 2");
+                            nextTest();
+                        }
+                    })
+                } else {
+                    addLineToDocument("Test " + index + " failed: bad return 1");
+                    nextTest();
+                }
+            })
+        },
+        function () {
+            //invalid access code test
+            postRequest('/api/create', { doors: [1, 2] }, (res) => {
+                var obj = JSON.parse(res);
+                var AccessToken = obj.AccessToken;
+                console.log("Key " + index + ": " + AccessToken);
+                if (AccessToken != "") {
+                    postRequest('/api/validate', { accessToken: "a", doorid: 1 }, (res) => {
+                        obj = JSON.parse(res);
+                        if (obj.IsAuthorized === false) {
+                            postRequest('/api/validate', { accessToken: AccessToken }, (res) => {
+                                obj = JSON.parse(res);
+                                if (obj.IsAuthorized === false) {
+                                    postRequest('/api/validate', { accessToken: AccessToken, doorid: "a" }, (res) => {
+                                        obj = JSON.parse(res);
+                                        if (obj.IsAuthorized === false) {
+                                            addLineToDocument("Test " + index + " passed");
+                                            nextTest();
+                                        } else {
+                                            addLineToDocument("Test " + index + " failed: bad return 4");
+                                            nextTest();
+                                        }
+                                    });
+                                } else {
+                                    addLineToDocument("Test " + index + " failed: bad return 3");
+                                    nextTest();
+                                }
+                            });
+                        } else {
+                            addLineToDocument("Test " + index + " failed: bad return 2");
+                            nextTest();
+                        }
+                    })
+                } else {
+                    addLineToDocument("Test " + index + " failed: bad return 1");
+                    nextTest();
+                }
+            })
+        }
+    ]
+
+    function nextTest() {
+        index++;
+        if (index >= tests.length) {
+            addLineToDocument("Tests Complete!");
+        } else {
+            tests[index]();
+        }
+    }
+    tests[0]();
+</script>
