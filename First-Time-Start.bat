@@ -15,7 +15,4 @@ if %ERRORLEVEL% NEQ 0 (
     EXIT
 )
 echo "Setting up Enviroment"
-npm init 
-
-echo "Starting Server"
-npm run start
+npm install && md data && echo "Starting Server" && npm run start && PAUSE

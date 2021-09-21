@@ -17,7 +17,7 @@ I completed the back-end challenge for the digital key card system through a RES
 - Dependencies: 
 	- [Express](https://www.npmjs.com/package/express) v4.17.1
 	- [sqlite3](https://www.npmjs.com/package/sqlite3) v4.2.0 
-	- [tsc compiler for Typescript](https://www.npmjs.com/package/tsc) v2.0.3
+	- [Typescript](https://www.npmjs.com/package/typescript) v4.4.3
 - Dev Dependencies:
 	- @<span>types/express
 	- @<span>types/node
@@ -44,7 +44,7 @@ To run the project, download the repository and download [NodeJs](https://nodejs
 Start the server for the first time by running `First-Time-Start.bat`. This is to ensure all the scripts compile and all required node modules are included. After the first time, you may use `Start.bat`.
 
 ##### Mac and Linux
-Open the terminal and navigate to the project. To setup the project, run `npm init` then to compile the project and start the server, run `npm run start`. After you compile the project, you may use `npm run soft-start` to start the server without recompiling. 
+Open the terminal and navigate to the project. To setup the project, run `npm init` then to compile the project. Create a folder in the root of the project called `data`. Start the server, run `npm run start`. After you compile the project, you may use `npm run soft-start` to start the server without recompiling. 
 
 #### Using the API
 The API can be found under `/API`. There are 2 endpoints: `/create` and `/validate`. Both endpoints accept JSON. 
