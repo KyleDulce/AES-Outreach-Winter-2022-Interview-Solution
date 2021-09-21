@@ -19,7 +19,7 @@ export default class DoorManager {
     public create(doorAccess: any, Expiry: any): string {
 
         //error testing
-        if(!this.isArrayIntFilled(doorAccess) || !Number.isInteger(Expiry)) {
+        if(!this.isArrayIntFilled(doorAccess) || (Expiry != undefined && !Number.isInteger(Expiry))) {
             return "";
         }
 
