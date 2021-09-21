@@ -16,7 +16,13 @@ export default class DoorManager {
      * @param Expiry The UNIX timestamp of when the token will expire
      * @returns The Access token String
      */
-    public create(doorAccess: Array<number>, Expiry: number): string {
+    public create(doorAccess: any, Expiry: any): string {
+
+        //error testing
+        if(!this.isArrayIntFilled(doorAccess) || !Number.isInteger(Expiry)) {
+            return "";
+        }
+
         //Generate Access Token (128 hex character token)
         const accessToken: string = crypto.randomBytes(64).toString('hex');
 
@@ -26,6 +32,23 @@ export default class DoorManager {
         }
 
         return accessToken;
+    }
+
+    /**
+     * Tests if the object is an array and filled with numbers
+     * @param array 
+     */
+    private isArrayIntFilled(array: any): boolean {
+        if(Array.isArray(array)) {
+            //check each element
+            for(let x = 0; x < array.length; x++) {
+                if(!Number.isInteger(array[x])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

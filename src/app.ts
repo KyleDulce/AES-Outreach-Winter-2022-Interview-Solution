@@ -18,8 +18,8 @@ const server = http.createServer(app);
 app.use(express.json());
 
 app.post("/api/create", (req, res) => {
-    const door_data: Array<number> = req.body.doors;
-    const expiry: number = req.body.expiry;
+    const door_data: any = req.body.doors;
+    const expiry: any = req.body.expiry;
 
     res.send({ AccessToken: doorManager.create(door_data, expiry) });
 });
